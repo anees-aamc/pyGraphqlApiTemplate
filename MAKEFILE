@@ -1,0 +1,25 @@
+DOCKER = docker compose
+SERVICE = api
+
+.PHONY: up down build migrate makemigration shell logs dbshell
+
+up:
+	$(DOCKER) up --build -d
+
+down:
+	$(DOCKER) down
+
+build:
+	$(DOCKER) build
+
+migrate:
+	$(DOCKER) run --rm migrations
+
+makemigration:
+	$(DOCKER) run --rm migrations alembic revision --autogenerate -m "$(msg)"
+
+logs:
+	$(DOCKER) logs -f $(SERVICE)
+
+dbshell:
+	$(DOCKER) exec db psql -U ${POSTGRES_USER} -d ${POSTGRES_DB}
